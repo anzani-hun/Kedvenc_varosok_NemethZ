@@ -62,10 +62,23 @@ using MySqlConnector;   //ezt be kell tölteni
 
             //vagy {} fűzve:
             sqlCommand.CommandText = $"INSERT INTO kvarosok (nev, megye, hozzaadva) VALUES ('{varosnev}','{megye}',{ev});";
-            sqlCommand.ExecuteNonQuery();
+            sqlCommand.ExecuteNonQuery();       //ez lefuttatja a felette lévő sort
         }
 
+        Console.WriteLine("A városok rögzítése megtörént.");
 
+        //vagy Előkészített parancsok használatával
+        //helykitöltő (placeholder) elemeket használunk az értékek helyett és majd később adjuk meg a tényleges értékeket.
+        sqlCommand.CommandText = "INSERT INTO kvarosok (nev, megye, hozzaadva) VALUES (@vnev, @vmegye, @vev);";
+        sqlCommand.Parameters.AddWithValue("@vnev", "Szentendre");
+        sqlCommand.Parameters.AddWithValue("@vmegye", "Pest");
+        sqlCommand.Parameters.AddWithValue("@vev", 2024);
+
+        //ezeket a paramétereket össze kell gyúrni
+        sqlCommand.Prepare();
+        sqlCommand.ExecuteNonQuery();       //ez lefuttatja a felette lévő sort
+
+        dbConnection.Close();
 
         Console.ReadKey();
     }
